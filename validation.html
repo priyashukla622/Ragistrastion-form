@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration form</title>
+    <style>
+        /* Your CSS styles here */
+    </style>
+</head>
+<style>
+    body {
+        background-color: lightseagreen;
+    }
+
+    .container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .form-container{
+        background-color: pink;
+        padding: 40px;
+        height: 600px;
+    }
+    .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+</style>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <form id="form" onsubmit="return validateform()">
+                <h1 align="center">Registration Form</h1>
+                <label for="fullname">Name:</label>
+                <input type="text" name="fullname" id="fullnameInput" class="form-control" />
+                <br>
+                <span id="fullnameError" class="error-message"></span>
+                <br><br>
+
+                <label for="email">Email:</label>
+                <input type="text" name="email" class="form-control" id="Emailinput">
+                <br>
+                <span id="emailError" class="error-message"></span>
+                <br><br>
+
+                <label for="Password">Password:</label>
+                <input type="Password" name="Password" class="form-control" id="Passwordinput">
+                <br>
+                <span id="PasswordError" class="error-message"></span>
+                <br><br>
+                <label for="ConfirmPassword">ConfirmPassword:</label>
+                <input type="Password" name="ConfirmfirmPassword" class="form-control" id="ConfirmPasswordinput">
+                <br>
+                <span id="ConfirmPasswordError" class="error-message"></span>
+                <br><br>
+                <label for="Age">Age:</label>
+                <input type="number" name="Age" class="form-control" id="Ageinput">
+                <br>
+                <span id="AgeError" class="error-message"></span>
+                <br><br>
+
+                <!-- Other input fields... -->
+
+                <label for="Gender">Gender:</label>
+                <input type="radio" name="Gender" value="male" class="form-control" id="MaleGenderInput">Male
+                <input type="radio" name="Gender" value="female" class="form-control" id="FemaleGenderInput">Female
+                <input type="radio" name="Gender" value="other" class="form-control" id="OtherGenderInput">Other
+                <br><br>
+                <span id="GenderError" class="error-message"></span>
+                <br><br>
+
+                <label for="Interests">Interests:</label>
+                <input type="checkbox" name="Interests" class="form-control" id="Interestsinput">Sports
+                <input type="checkbox" name="Interests" class="form-control" id="Interestsinput">Music
+                <input type="checkbox" name="Interests" class="form-control" id="Interestsinput">Reading
+                <input type="checkbox" name="Interests" class="form-control" id="Interestsinput">Travelling
+                <br><br> 
+                <span id="Interestserror" class="error-message"></span>
+                <br><br>
+                <label for="Country">Country:</label>
+                <select id="country" name="country">
+                    <option value="">Select a Country</option>
+                </select>
+                <br><br>
+                <span id="CountryError" class="error-message"></span>
+                <br><br>
+            
+
+                <!-- Other form fields... -->
+
+                <button type="submit" id="submitbutton">Submit</button>
+                <button type="reset" id="resetbutton">reset</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        
+        const form = document.getElementById("registrationForm");
+        const countrySelect = document.getElementById("country");
+        const countryError = document.getElementById("CountryError");
+        fetch("https://restcountries.com/v3.1/all")
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(country => {
+                    const option = document.createElement("option");
+                    option.value = country.name.common;
+                    option.textContent = country.name.common;
+                    countrySelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error fetching country data:", error));
+        function validateform() {
+            const fullname = document.getElementById("fullnameInput").value;
+            const email = document.getElementById("Emailinput").value;
+            const Password = document.getElementById("Passwordinput").value;
+            const ConfirmPassword = document.getElementById("ConfirmPasswordinput").value;
+            const Age = document.getElementById("Ageinput").value;
+            const maleGenderInput = document.getElementById("MaleGenderInput");
+            const femaleGenderInput = document.getElementById("FemaleGenderInput");
+            const otherGenderInput = document.getElementById("OtherGenderInput");
+            const interestsInputs = document.querySelectorAll('input[name="Interests"]:checked');
+        
+            const fullnameError = document.getElementById("fullnameError");
+            const emailError = document.getElementById("emailError");
+            const PasswordError = document.getElementById("PasswordError");
+            const ConfirmPasswordError = document.getElementById("ConfirmPasswordError");
+            const AgeError = document.getElementById("AgeError");
+            const GenderError = document.getElementById("GenderError");
+            const interestsError = document.getElementById("Interestserror");
+        
+            // Clear previous error messages
+            fullnameError.textContent = "";
+            emailError.textContent = "";
+            PasswordError.textContent = "";
+            ConfirmPasswordError.textContent = "";
+            AgeError.textContent = "";
+            GenderError.textContent = "";
+            interestsError.textContent = "";
+        
+            if (fullname === "") {
+                fullnameError.textContent = "Please fill the name";
+                return false;
+            }
+            if (email === "") {
+                emailError.textContent = "Please fill the email";
+                return false;
+            } else if (!isValidEmail(email)) {
+                emailError.textContent = "Please enter a valid email";
+                return false;
+            }
+            if (Password === "") {
+                PasswordError.textContent = "Please fill the password";
+                return false;
+            }
+            if (ConfirmPassword === "") {
+                ConfirmPasswordError.textContent = "Please fill the Confirm password";
+                return false;
+            }
+            if (Password !== ConfirmPassword) {
+                ConfirmPasswordError.textContent = "Passwords do not match";
+                return false;
+            }
+            if (Age === "") {
+                AgeError.textContent = "Please fill the Age";
+                return false;
+            }
+            if (!maleGenderInput.checked && !femaleGenderInput.checked && !otherGenderInput.checked) {
+                GenderError.textContent = "Please select a gender";
+                return false;
+            }
+            if (interestsInputs.length === 0) {
+                interestsError.textContent = "Please select at least one interest";
+                return false;
+            }
+            const selectedCountry = countrySelect.value;
+            if (selectedCountry === "") {
+                countryError.textContent = "Please select a country";
+                return false;
+            }
+        
+            // Other field validations...
+        
+            return true;
+        }
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }       
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
